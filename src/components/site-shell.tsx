@@ -1,0 +1,12 @@
+import { Link, useRouterState } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
+import { Instagram, Menu, X, Youtube } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Button } from "./ui";
+
+const nav = [["Home", "/"], ["About", "/about"], ["Brands", "/brands"], ["Pricing", "/pricing"], ["Tracker", "/tracker"], ["Contact", "/contact"]] as const;
+export function SiteShell({ children }: { children: ReactNode }) {
+ const [open,setOpen]=useState(false); const path=useRouterState({select:s=>s.location.pathname});
+ return <div className="site-frame"><header className="site-header"><nav className="nav-shell"><Link to="/" className="brand"><span className="brand-mark">V</span><span>VELOCE</span><small>/ TRACKER</small></Link><div className="desktop-nav">{nav.map(([label,to])=><Link key={to} to={to} className={path===to?"active":""}>{label}</Link>)}</div><Link to="/tracker" className="btn btn-primary nav-cta">Track my bike</Link><Button variant="quiet" className="menu-button" aria-label="Toggle menu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</Button></nav><AnimatePresence>{open&&<motion.div className="mobile-nav" initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}}>{nav.map(([label,to])=><Link key={to} to={to} onClick={()=>setOpen(false)}>{label}</Link>)}</motion.div>}</AnimatePresence></header><motion.main key={path} initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.35}}>{children}</motion.main><Footer/></div>
+}
+function Footer(){return <footer><div className="section-shell footer-grid"><div><Link to="/" className="brand"><span className="brand-mark">V</span><span>VELOCE</span></Link><p>Precision maintenance intelligence for riders who treat every kilometre as engineering data.</p></div><div><span className="footer-label">Product</span><Link to="/brands">Bike brands</Link><Link to="/pricing">Pricing</Link><Link to="/tracker">Service tracker</Link></div><div><span className="footer-label">Company</span><Link to="/about">About us</Link><Link to="/contact">Contact</Link><span className="socials"><Instagram/><Youtube/></span></div><form onSubmit={e=>e.preventDefault()}><span className="footer-label">Stay on line</span><div className="newsletter"><input aria-label="Email for newsletter" type="email" placeholder="you@rider.com"/><Button>Join</Button></div></form></div><div className="footer-base section-shell"><span>© 2026 VELOCE SYSTEMS</span><span>BUILT FOR THE NIGHT SHIFT</span></div></footer>}
